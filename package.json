@@ -1,5 +1,5 @@
 {
-  "name": "erela.js",
+  "name": "@pliexe/erela.js",
   "version": "1.1.7",
   "description": "An easy-to-use Lavalink client for NodeJS.",
   "main": "./dist/index.js",
