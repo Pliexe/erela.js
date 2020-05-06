@@ -5,7 +5,8 @@ declare module "erela.js" {
     export const version: string;
     type Type<T> = new (...args: any[]) => T;
 
-    export class ErelaClient extends EventEmitter {
+    export class ErelaClient extends EventEmitter
+    {
         constructor(client?: any, nodes?: INodesOptions[], options?: IErelaOptions);
 
         public readonly client: any;
@@ -15,7 +16,7 @@ declare module "erela.js" {
         public readonly player: Type<Player>;
         public readonly queue: Type<Queue>;
         public readonly track: Type<Track>;
-        public readonly players: PlayerStore;
+        public readonly players: PlayerStore<string, Type<Player>>;
         public readonly nodes: NodeStore;
         public readonly library: any;
 
@@ -39,13 +40,15 @@ declare module "erela.js" {
         public search(query: string | IQuery, requester: any): Promise<SearchResult>;
         public sendWS(data: any): void;
     }
-    
-    export interface IQuery {
+
+    export interface IQuery
+    {
         source?: "youtube" | "soundcloud";
         query: string;
     }
 
-    export interface IErelaOptions {
+    export interface IErelaOptions
+    {
         readonly shardCount?: number;
         readonly player?: Type<Player>;
         readonly node?: Type<Node>;
@@ -55,7 +58,8 @@ declare module "erela.js" {
         readonly library?: string;
     }
 
-    export class Player {
+    export class Player
+    {
         constructor(erela: ErelaClient, node: Node, options: IPlayerOptions, extra: any);
 
         public readonly erela: ErelaClient;
@@ -84,7 +88,8 @@ declare module "erela.js" {
         public setQueueRepeat(repeat: boolean): void;
     }
 
-    export interface IPlayerOptions {
+    export interface IPlayerOptions
+    {
         readonly guild: any;
         readonly textChannel: any;
         readonly voiceChannel: any;
@@ -93,26 +98,29 @@ declare module "erela.js" {
         readonly volume?: number;
     }
 
-    export interface IEqualizerBand {
+    export interface IEqualizerBand
+    {
         readonly band: number;
         readonly gain: number;
     }
 
-    export class Queue extends Array {
+    export class Queue extends Array
+    {
         constructor(erela: ErelaClient);
 
         public get duration(): number;
         public get size(): number;
         public get empty(): boolean;
 
-        public add(track: Track|Track[], offset?: number): void;
-        public removeFrom(start: number, end: number): Track[]|null;
-        public remove(track: Track|number): Track|null;
+        public add(track: Track | Track[], offset?: number): void;
+        public removeFrom(start: number, end: number): Track[] | null;
+        public remove(track: Track | number): Track | null;
         public clear(): void;
         public shuffle(): void;
     }
 
-    export class Track {
+    export class Track
+    {
         constructor(data: ITrackData, requester: any);
 
         public readonly track: string;
@@ -124,11 +132,12 @@ declare module "erela.js" {
         public readonly title: string;
         public readonly uri: string;
         public readonly requester: any;
-        
+
         public displayThumbnail(size?): string;
     }
 
-    export interface ITrackInfo {
+    export interface ITrackInfo
+    {
         readonly identifier: string;
         readonly isSeekable: boolean;
         readonly author: string;
@@ -138,12 +147,14 @@ declare module "erela.js" {
         readonly uri: string;
     }
 
-    export interface ITrackData {
+    export interface ITrackData
+    {
         readonly track: string;
         readonly info: ITrackInfo;
     }
 
-    export class Node {
+    export class Node
+    {
         constructor(erela: ErelaClient, options: INodesOptions);
 
         public readonly erela: ErelaClient;
@@ -164,7 +175,8 @@ declare module "erela.js" {
         public send(data: any): Promise<boolean>;
     }
 
-    export interface INodesOptions {
+    export interface INodesOptions
+    {
         readonly identifier?: string;
         readonly host: string;
         readonly port: number;
@@ -173,7 +185,8 @@ declare module "erela.js" {
         readonly retryDelay?: number;
     }
 
-    export interface INodeStats {
+    export interface INodeStats
+    {
         readonly players: number;
         readonly playingPlayers: number;
         readonly uptime: number;
@@ -182,26 +195,30 @@ declare module "erela.js" {
         readonly frameStats: INodeFrameStats;
     }
 
-    export interface INodeMemoryStats {
+    export interface INodeMemoryStats
+    {
         readonly free: number;
         readonly used: number;
         readonly allocated: number;
         readonly reservable: number;
     }
 
-    export interface INodeCPUStats {
+    export interface INodeCPUStats
+    {
         readonly cores: number;
         readonly systemLoad: number;
         readonly lavalinkLoad: number;
     }
 
-    export interface INodeFrameStats {
+    export interface INodeFrameStats
+    {
         readonly sent?: number;
         readonly nulled?: number;
         readonly deficit?: number;
     }
 
-    export class Store<K, V> extends Map {
+    export class Store<K, V> extends Map
+    {
         constructor(iterable?: Iterable<any>);
 
         public get(key: K): V | null;
@@ -215,7 +232,7 @@ declare module "erela.js" {
         public sort(fn: ((a: [any, any], b: [any, any]) => number) | undefined): Store<K, V>;
     }
 
-    export class PlayerStore {
+    export class PlayerStore<K, V> extends Store<K, V> {
         constructor(erela: ErelaClient);
 
         private readonly erela: ErelaClient;
@@ -224,7 +241,8 @@ declare module "erela.js" {
         public destroy(guildId: string): Player | null;
     }
 
-    export class NodeStore {
+    export class NodeStore
+    {
         constructor(erela: ErelaClient);
 
         private readonly erela: ErelaClient;
@@ -235,7 +253,8 @@ declare module "erela.js" {
         public destroy(nodeId: any): Node | null;
     }
 
-    export class SearchResult {
+    export class SearchResult
+    {
         constructor(data: ISearchResultData, track: Type<Track>, requester: any);
 
         public readonly loadType: string;
@@ -244,30 +263,35 @@ declare module "erela.js" {
         public readonly exception: IException | null;
     }
 
-    export interface ISearchResultData {
+    export interface ISearchResultData
+    {
         readonly loadType: string;
         readonly playlistInfo: IPlaylistInfo;
         readonly tracks: ITrackData[];
         readonly exception?: IException;
     }
 
-    export interface IPlaylistInfo {
+    export interface IPlaylistInfo
+    {
         readonly name?: string;
         readonly selectedTrack?: ITrackData | null;
     }
 
-    export interface IPlaylist {
+    export interface IPlaylist
+    {
         readonly info: IPlaylistInfo;
         readonly tracks: Track[];
         readonly duration: number;
     }
 
-    export interface IException {
+    export interface IException
+    {
         readonly message: string;
         readonly severity: string;
     }
 
-    export class Utils {
+    export class Utils
+    {
         public static formatTime(milliseconds: number, minimal: boolean): string;
         public static parseTime(time: string): number | null;
     }
